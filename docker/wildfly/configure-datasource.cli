@@ -1,0 +1,19 @@
+# Configuracion de WildFly ejecutada en tiempo de build (docker build) con el servidor embebido.
+# Los valores de conexion NO se fijan aqui: son expresiones ${env.*} que WildFly resuelve al
+# arrancar con las variables de entorno definidas en docker-compose.yml.
+
+embed-server --std-out=echo --server-config=standalone.xml
+
+# 1. Driver JDBC (modulo org.postgresql instalado por el Dockerfile)
+/subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql, driver-module-name=org.postgresql, driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
+
+# 2. Datasource JTA administrado por WildFly (pool de conexiones + validacion)
+data-source add --name=OrderSystemDS --jndi-name=java:jboss/datasources/OrderSystemDS --driver-name=postgresql --connection-url=jdbc:postgresql://${env.DB_HOST:database}:${env.DB_PORT:5432}/${env.DB_NAME:ordersystem} --user-name=${env.DB_USER:ordersystem} --password=${env.DB_PASSWORD:ordersystem} --jta=true --use-ccm=true --min-pool-size=2 --max-pool-size=20 --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+
+# 3. Datasource por defecto de Jakarta EE -> PostgreSQL (en lugar del ExampleDS H2 de ejemplo)
+/subsystem=ee/service=default-bindings:write-attribute(name=datasource, value=java:jboss/datasources/OrderSystemDS)
+
+# 4. Liberar el context-root "/" (pagina de bienvenida de WildFly) para publicar la API en /api
+/subsystem=undertow/server=default-server/host=default-host/location=\/:remove
+
+stop-embedded-server

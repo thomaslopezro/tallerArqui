@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CDI 4.x (schema 4.0). Con bean-discovery-mode="annotated" (valor por defecto en Jakarta EE 10+) solo son beans
+     las clases con anotacion de scope (@ApplicationScoped, @RequestScoped...). Este archivo no es
+     estrictamente obligatorio; se incluye para dejar explicito el modo de descubrimiento. -->
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_4_0.xsd"
+       version="4.0"
+       bean-discovery-mode="annotated">
+</beans>

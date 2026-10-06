@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Descriptor especifico de WildFly: publica la aplicacion en la raiz -> http://localhost:8080/api/... -->
+<jboss-web>
+    <context-root>/</context-root>
+</jboss-web>

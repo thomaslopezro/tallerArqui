@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Jakarta Persistence 3.2 (Jakarta EE 11). WildFly administra el proveedor (Hibernate ORM),
+     el EntityManagerFactory y las transacciones JTA. La aplicacion NO configura Hibernate a mano. -->
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+             version="3.2">
+    <persistence-unit name="orderSystemPU" transaction-type="JTA">
+        <!-- Datasource PostgreSQL definido en WildFly (docker/wildfly/configure-datasource.cli) -->
+        <jta-data-source>java:jboss/datasources/OrderSystemDS</jta-data-source>
+
+        <class>com.taller.ordersystem.inventory.domain.Product</class>
+        <class>com.taller.ordersystem.inventory.domain.InventoryReservation</class>
+        <class>com.taller.ordersystem.inventory.domain.ReservationItem</class>
+        <class>com.taller.ordersystem.order.domain.Order</class>
+        <class>com.taller.ordersystem.order.domain.OrderItem</class>
+        <class>com.taller.ordersystem.payment.domain.Payment</class>
+        <class>com.taller.ordersystem.saga.OrderProcess</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <!-- Crea/actualiza el esquema al desplegar. Con el volumen persistente de PostgreSQL un
+                 redespliegue conserva los datos (create/drop-and-create los borraria o fallaria). -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.jdbc.time_zone" value="UTC"/>
+        </properties>
+    </persistence-unit>
+</persistence>
